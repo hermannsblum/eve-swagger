@@ -7,6 +7,9 @@
     :copyright: (c) 2016 by Nicola Iarocci.
     :license: BSD, see LICENSE for more details.
 """
+
+from json import dumps
+
 from flask import current_app as app
 
 from eve_swagger import OrderedDict
