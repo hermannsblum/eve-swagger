@@ -50,16 +50,26 @@ def _object(rd, dr_sources):
             props[field] = {'$ref': '#/definitions/{0}'.format(def_name)}
 
         if 'data_relation' in rules:
-            # the current field is a copy of another field
-            dr = rules['data_relation']
-            if dr['resource'] not in app.config['DOMAIN']:
-                # source of data_relation does not exist
-                continue
-            title = app.config['DOMAIN'][dr['resource']]['item_title']
-            source_def_name = title+'_'+dr['field']
-            props[field] = {
-                '$ref': '#/definitions/{0}'.format(source_def_name)
-            }
+
+            if rules['type'] == 'objectid':
+                props[field] = {
+                    'type': 'string',
+                    'format': 'objectid',
+                    'description': dumps(rules['data_relation']),
+                    'readOnly': rules.get('readonly', False)
+                }
+
+            else:
+                # the current field is a copy of another field
+                dr = rules['data_relation']
+                if dr['resource'] not in app.config['DOMAIN']:
+                    # source of data_relation does not exist
+                    continue
+                title = app.config['DOMAIN'][dr['resource']]['item_title']
+                source_def_name = title+'_'+dr['field']
+                props[field] = {
+                    '$ref': '#/definitions/{0}'.format(source_def_name)
+                }
 
     field_def = {}
     field_def['type'] = 'object'
